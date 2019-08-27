@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			<p:submenu label="Despachos" icon="fa fa-fw fa-github-alt">
+				<p:menuitem value="Ver Despachos" url="despachoAdmin.dbs"
+					icon="fa fa-fw fa-plus" />
+			</p:submenu>
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+</h:body>
+</html>

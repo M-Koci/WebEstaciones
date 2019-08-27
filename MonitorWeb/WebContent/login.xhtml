@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="index.css" />
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<title>Estaciones - DBS</title>
+</h:head>
+<h:body id="principal">
+	<h:form>
+		<div id="cuadro">
+			<b:panel title="Iniciar sesion" look="primary" collapsible="false">
+				<b:row>
+					<b:column>
+						<b:growl id="mensaje" autoUpdate="true" showSummary="true"
+							showDetail="true" />
+						<b:inputText placeholder="Usuario" id="username"
+							value="#{loginController.usuario.nombre}" ajax="true"
+							autocomplete="false" update="@(.message)">
+							<f:facet name="prepend">
+								<b:icon name="user" />
+							</f:facet>
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column>
+						<b:inputSecret placeholder="Password" id="password"
+							value="#{loginController.usuario.password}" ajax="true"
+							autocomplete="false" update="@(.message)">
+							<f:facet name="prepend">
+								<b:iconAwesome name="key" />
+							</f:facet>
+						</b:inputSecret>
+						<h:column />
+						<b:commandButton icon="ui-icon-key" value="Iniciar Sesión"
+							look="success" action="#{loginController.iniciarSesion()}" />
+					</b:column>
+				</b:row>
+			</b:panel>
+		</div>
+	</h:form>
+
+	<div>
+		<img src="resources/images/logo.jpg" width="350" />
+	</div>
+</h:body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+	<title>Crear Camion</title>
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="index?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			<p:submenu label="Despachos" icon="fa fa-fw fa-github-alt">
+				<p:menuitem value="Ver Despachos" url="despacho.dbs"
+					icon="fa fa-fw fa-plus" />
+			</p:submenu>
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h:form id="frmPrincipal">
+		<p:panel id="panel" header="Ingresar usuario"
+			style="margin-botton:10px">
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="3" id="panelIngreso">
+
+				<p:outputLabel value="Contraseña anterior" />
+				<p:inputText id="actualPass" value="#{usuarioMB.actualPass}" required="true"
+					label="Contraseña anterior" style="width:250px">
+				</p:inputText>
+				<p:message for="actualPass" style="color:red" />
+				
+				<p:outputLabel value="Nueva contraseña:" />
+				<p:password id="password1" value="#{usuarioMB.password}"
+					style="width:250px" required="true" label="Password"
+					match="password2" validatorMessage="Las contraseñas no coinciden"
+					weakLabel="Debil" goodLabel="Bueno" strongLabel="Fuerte"
+					feedback="true" promptLabel="Ingrese el password" />
+				<p:message for="password1" style="color:red" />
+				<p:outputLabel value="Confirmar contraseña:" />
+				<p:password id="password2" required="true" label="Password"
+					style="width:250px" />
+				<p:message for="password2" style="color:red" />
+			</h:panelGrid>
+		</p:panel>
+		<p:commandButton value="Cambiar" icon="fa fa-fw fa-plus-square"
+			action="#{usuarioMB.modificarUsuario()}"
+			update=":frmPrincipal:panelIngreso" />
+		<p:commandButton value="Volver" icon="fa fa-fw fa-undo"
+			action="index?faces-redirect=true" immediate="true" />
+	</h:form>
+</h:body>
+</html>

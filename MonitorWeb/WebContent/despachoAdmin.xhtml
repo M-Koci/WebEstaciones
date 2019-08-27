@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event listener="#{plantillaController.verificarSesion()}"
+		type="preRenderView" />
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<h:outputScript library="js" name="calendar_es.js" />
+	<h:outputStylesheet library="css" name="index.css" />
+</h:head>
+<h:body>
+	<style type="text/css">
+.ui-paginator a {
+	margin-right: 5px;
+}
+</style>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+						
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h:form id="frmPrincipal">
+		<p:growl id="msgs" showDetail="true" />
+		<h:panelGrid columns="2" style="text-align:right">
+			<p:outputLabel value="Fecha desde:" for="calFecDesde" />
+			<p:calendar id="calFecDesde" required="true" locale="es"
+				pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true"
+				value="#{despachoMB.fechaDesde}" />
+
+			<p:outputLabel value="Fecha hasta:" for="calFecHasta" />
+			<p:calendar id="calFecHasta" required="true" locale="es"
+				pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true"
+				value="#{despachoMB.fechaHasta}" />
+
+			<p:outputLabel value="ID:" for="camionID" />
+			<p:inputText id="camionID" value="#{despachoMB.stationCode}" />
+
+
+			<p:outputLabel />
+			<p:commandButton value="Enviar"
+				actionListener="#{despachoMB.getDespachoAdmin(despachoMB.fechaDesde, despachoMB.fechaHasta, despachoMB.stationCode)}"
+				update="tablaDespachos" process="@all" />
+		</h:panelGrid>
+
+		<p:separator />
+		<p:dataTable id="tablaDespachos" style="width:auto; font-size:14px;"
+			var="desp" rows="20" paginator="true" value="#{despachoMB.despachos}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+			rowsPerPageTemplate="15,30,60" scrollable="true" scrollWidth="100%">
+
+			<f:facet name="{Exporters}">
+				<div style="float: right; padding-top: 1x;">
+					<h:commandLink>
+						<p:graphicImage name="images/excel.png" width="16" />
+						<p:dataExporter type="xls" target="tablaDespachos"
+							fileName="despachos" />
+					</h:commandLink>
+				</div>
+			</f:facet>
+
+			<p:column headerText="ID" style="width:90px;">
+				<h:outputLabel value="#{desp.ptnet}" />
+			</p:column>
+
+			<p:column headerText="Manguera" style="width:90px;"
+				sortBy="#{desp.manguera}">
+				<h:outputLabel value="#{desp.manguera}" />
+			</p:column>
+
+			<p:column headerText="Station Code" sortBy="#{desp.stationCode}"
+				style="width:90px;">
+				<h:outputLabel value="#{desp.stationCode}" />
+			</p:column>
+
+			<p:column headerText="Fecha" style="width:100px;"
+				sortBy="#{desp.fechaCuelgue}">
+				<h:outputLabel value="#{desp.fechaCuelgue}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+				</h:outputLabel>
+			</p:column>
+
+			<p:column headerText="Importe" style="width:105px;">
+				<h:outputLabel value="#{desp.importe}" />
+			</p:column>
+
+			<p:column headerText="Litros" style="width:70px;">
+				<p:outputLabel value="#{desp.litros}">
+
+				</p:outputLabel>
+			</p:column>
+
+			<p:column headerText="Precio Unitario" style="width:70px;">
+				<p:outputLabel value="#{desp.precioUnitario}">
+
+				</p:outputLabel>
+			</p:column>
+
+			<p:column headerText="Autorizador" style="width:70px;">
+				<p:outputLabel value="#{desp.autorizador}">
+
+				</p:outputLabel>
+			</p:column>
+
+		</p:dataTable>
+
+
+	</h:form>
+
+</h:body>
+</html>

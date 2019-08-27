@@ -1,0 +1,57 @@
+#principal {
+	width: 1024px;
+	margin: 0 auto;
+}
+
+#cuadro {
+	margin: 100px auto;
+	width: 40%;
+	text-align: center;
+}
+
+img{
+display:block;
+margin:auto;
+opacity: 0.5;
+border-radius: 25px;
+}
+
+.ui-dialog-title {
+	color:#333332;
+	}
+
+.ui-dialog-title-Ptpos {
+	color:#FFFFFF;
+	}
+
+.ui-dialog {
+	font-size: 14px;
+	border: none;
+}
+
+.panel-heading {
+	background-color: black!important;
+	font-family: sans-serif;
+	font: bold;
+}
+
+.container {
+	width: 400px;
+}
+.panel {
+	border-color: black!important;
+	width: 400px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  background-color: black;
+  border: none;
+}
+
+.ui-icon-power { 
+	background-image: "resources/images/salir.png";
+    }

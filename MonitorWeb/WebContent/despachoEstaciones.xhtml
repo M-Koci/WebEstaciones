@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:event listener="#{plantillaController.verificarSesion()}"
+		type="preRenderView" />
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<h:outputScript library="js" name="calendar_es.js" />
+	<h:outputStylesheet library="css" name="index.css" />
+</h:head>
+<h:body>
+
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="index?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			<p:submenu label="Despachos" icon="fa fa-fw fa-car">
+				<p:menuitem value="Ver Despachos" url="despacho.dbs"
+					icon="fa fa-fw fa-list-ul" />
+			</p:submenu>
+			<f:facet name="options">
+				<p:commandButton icon="fa fa-fw fa-key" title="Cambiar contraseña"
+					actionListener="#{usuarioMB.leer(loginController.usuario)}"
+					oncomplete="PF('wdialogoPass').show();" update="dialogoPass" />
+
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h:form id="frmPrincipal">
+		<p:growl autoUpdate="true" id="msgs" showDetail="true" />
+		<h:panelGrid columns="2" style="text-align:right">
+			<p:outputLabel value="Fecha desde:" for="calFecDesde" />
+			<p:calendar id="calFecDesde" required="true" locale="es"
+				pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true"
+				value="#{despachoMB.fechaDesde}" />
+
+			<p:outputLabel value="Fecha hasta:" for="calFecHasta" />
+			<p:calendar id="calFecHasta" required="true" locale="es"
+				pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="true"
+				value="#{despachoMB.fechaHasta}" />
+
+
+			<p:outputLabel />
+			<p:commandButton value="Enviar"
+				actionListener="#{despachoMB.getDespachoFechas(despachoMB.fechaDesde, despachoMB.fechaHasta)}"
+				update="tablaDespachos" />
+		</h:panelGrid>
+
+		<p:separator />
+		<p:dataTable id="tablaDespachos" style="width:auto; font-size:14px;"
+			var="desp" rows="15" paginator="true" value="#{despachoMB.despachos}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+			rowsPerPageTemplate="15,30,60" scrollable="true" scrollWidth="100%"
+			sortField="#{desp.fechaCuelgue}">
+
+			<f:facet name="{Exporters}">
+				<div style="float: right; padding-top: 5px;">
+					<h:commandLink>
+						<p:graphicImage name="images/excel.png" width="24" />
+						<p:dataExporter type="xls" target="tablaDespachos"
+							fileName="despachos" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="images/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="tablaDespachos"
+							fileName="despachos" />
+					</h:commandLink>
+				</div>
+			</f:facet>
+
+			<p:column headerText="ID" filterBy="#{desp.id}" style="width:90px;">
+				<h:outputLabel value="#{desp.ptnet}" />
+			</p:column>
+
+			<p:column headerText="Manguera" filterBy="#{desp.manguera}"
+				style="width:90px;">
+				<h:outputLabel value="#{desp.manguera}" />
+			</p:column>
+
+			<p:column headerText="Fecha" style="width:100px;">
+				<h:outputLabel value="#{desp.fechaCuelgue}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+				</h:outputLabel>
+			</p:column>
+
+			<p:column headerText="Importe" style="width:105px;">
+				<h:outputLabel value="#{desp.importe}" />
+			</p:column>
+
+			<p:column headerText="Litros" style="width:70px;">
+				<p:outputLabel value="#{desp.litros}">
+
+				</p:outputLabel>
+			</p:column>
+
+			<p:column headerText="Precio Unitario" style="width:70px;">
+				<p:outputLabel value="#{desp.precioUnitario}">
+
+				</p:outputLabel>
+			</p:column>
+
+		</p:dataTable>
+
+
+	</h:form>
+
+	<!-- 	####################__DIALOGO_PASSWORD__####################	 -->
+	<p:dialog id="dialogoPass" widgetVar="wdialogoPass"
+		header="Cambiar Contraseña" modal="true" closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2">
+
+				<p:outputLabel for="txtPassword" value="Password" />
+				<p:password id="txtPassword" required="true"
+					value="#{usuarioMB.user.password}" match="txtPassword2"
+					validatorMessage="Las contraseñas no coinciden" weakLabel="Debil"
+					goodLabel="Bueno" strongLabel="Fuerte" feedback="true"
+					promptLabel="Ingrese el password" />
+
+				<p:outputLabel for="txtPassword2" value="Confirmar" />
+				<p:password id="txtPassword2" required="true"
+					value="#{usuarioMB.user.password}" />
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					actionListener="#{usuarioMB.modificarUsuario()}"
+					oncomplete="PF('wdialogoPass').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogoPass').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>

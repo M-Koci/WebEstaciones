@@ -1,0 +1,598 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	>
+
+<h:head>
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+	<h:outputStylesheet library="css" name="index.css" />
+	<title>Estaciones</title>
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Estaciones" icon="fa fa-fw fa-building"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="EESS" url="editarEstaciones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="SMCC" url="camiones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="BCP" url="bcp.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="Alta GAC" url="altaGac.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+			</p:submenu>
+			
+			<p:submenu label="Contactos" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar contacto" url="contactoIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Ver contactos" url="contactoEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="S G" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarSG.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarSG.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Proveedores" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarProveedor.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarProveedor.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Controladora" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarControladora.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarControladora.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Despachos" icon="fa fa-fw fa-car">
+				<p:menuitem value="Ver Despachos" url="despachoAdmin.dbs"
+					icon="fa fa-fw fa-list-ul" />
+			</p:submenu>
+			
+			<p:submenu label="Localidades" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Ver Localidades" url="localidad.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+			</p:submenu>
+			
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<!-- 	####################__LISTA ESTACIONES__####################	 -->
+	<h:form id="frmPrincipal">
+		<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+			showDetail="true" />
+		<p:dataTable id="tablaEstaciones"
+			style="width:auto; font-size:12px; text-align:center"
+			emptyMessage="Ninguna estacion registrada"
+			value="#{estacionMB.estaciones}" var="est" rows="10" paginator="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,20,50" scrollable="true" scrollWidth="100%"
+			sortBy="#{est.razonSocial}">
+
+			<p:column headerText="ID" filterBy="#{est.idEstacion}"
+				filterMatchMode="contains" sortBy="#{est.idEstacion}">
+				<h:outputText value="#{est.idEstacion}" />
+			</p:column>
+
+			<p:column headerText="Razon Social" filterBy="#{est.razonSocial}"
+				filterMatchMode="contains" sortBy="#{est.razonSocial}"
+				style="text-align:left">
+				<h:outputText value="#{est.razonSocial}" />
+			</p:column>
+
+			<p:column headerText="Departamento"
+				filterBy="#{est.localidad.departamento.nombre}"
+				filterMatchMode="contains" style="text-align:left"
+				sortBy="#{est.localidad.departamento.nombre}">
+				<h:outputText value="#{est.localidad.departamento.nombre}" />
+			</p:column>
+
+			<p:column headerText="S. Gestion"
+				filterBy="#{est.sistemaGestion.nombre}" filterMatchMode="contains"
+				sortBy="#{est.sistemaGestion.nombre}" style="text-align:left">
+				<h:outputText value="#{est.sistemaGestion.nombre}" />
+			</p:column>
+
+
+			<p:column headerText="Datos SOM">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Ver Datos"
+					actionListener="#{somMB.leerSom(est)}"
+					rendered="#{estacionMB.tieneSom(est)}"
+					oncomplete="PF('wdialogoVista').show();" update="dgVista" />
+			</p:column>
+
+			<p:column headerText="Datos PTPOS">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Ver Datos"
+					actionListener="#{ptposMB.leerPtpos(est)}"
+					oncomplete="PF('wdialogoPtpos').show();" update="dgPtpos" />
+			</p:column>
+
+			<p:column headerText="Editar">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Editar"
+					actionListener="#{estacionMB.leer(est)}"
+					oncomplete="PF('wdialogo').show();" update="dialogo" />
+			</p:column>
+
+			<p:column headerText="SOM">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Agregar SOM"
+					actionListener="#{somMB.leerEstacion(est)}"
+					rendered="#{estacionMB.tieneSom(est) == false}"
+					oncomplete="PF('wdialogoAddSom').show();" update="dgAddSom" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<!-- 	####################__DIALOGO_VISTA__####################	 -->
+	<p:dialog id="dgVista" widgetVar="wdialogoVista"
+		header="#{somMB.som.estacion.idEstacion} - #{somMB.som.estacion.razonSocial}"
+		modal="true" closeOnEscape="true"
+		styleClass="ui-dialog-title-dialog ui-dialog" dynamic="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2" id="datosSom">
+
+				<h:outputText for="txtTeam" value="TeamViewer" />
+				<p:inplace id="txtTeam" editor="true" style="color:#19ff0d">
+					<h:inputText value="#{somMB.som.teamViewer}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtContacto" value="Telefono" />
+				<p:dataList value="#{somMB.telefono}" var="tel">
+        				#{tel.telefono}
+        		</p:dataList>
+
+				<h:outputText for="txtTerminal" value="Terminal" />
+				<h:outputText id="txtTerminal" value="#{somMB.som.terminal}"
+					style="color:#757575" />
+
+				<h:outputText for="txtVersion" value="Version SOM" />
+				<p:inplace id="txtVersion" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.version}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtMpls" value="MPLS" />
+				<p:inplace id="txtMpls" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.mpls}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtModelo" value="Modelo PC" />
+				<p:inplace id="txtModelo" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.modeloPC}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtUPS" value="UPS" />
+				<p:inplace id="txtUPS" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.ups}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtByPass" value="Llave ByPass" />
+				<p:inplace id="txtByPass" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.llaveByPass}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtBilletera" value="Billetera pistero" />
+				<p:inplace id="txtBilletera" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.billeteraPistero}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtSeparacion" value="Separacion de pista" />
+				<p:inplace id="txtSeparacion" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.separacionPista}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtWGT" value="MWGT" />
+				<p:inplace id="txtWGT" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.mwgt}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtMiTag" value="MiTags" />
+				<p:inplace id="txtMiTag" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.miTags}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtORTR" value="ORTR" />
+				<p:inplace id="txtORTR" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.ortr}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtFuente" value="Fuente Surtidor" />
+				<p:inplace id="txtFuente" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.fuenteSurtidor}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtUsuario" value="Usuario SOM" />
+				<p:inplace id="txtUsuario" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.usuarioSOM}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtPass" value="Password SOM" />
+				<p:inplace id="txtPass" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.passwordSOM}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtTerminalIP" value="IP Terminal" />
+				<p:inplace id="txtTerminalIP" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.terminalIP}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtRegulador" value="Regulador de voltaje" />
+				<p:inplace id="txtRegulador" editor="true" style="color:#757575">
+					<h:inputText value="#{somMB.som.reguladorVoltaje}" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtProveedor" value="Proveedor" />
+				<p:inplace id="txtProveedor" editor="true" style="color:#757575">
+					<h:inputHidden value="#{somMB.som.proveedor1.nombre}" />
+					<h:selectOneMenu converter="selectOneMenuConverter"
+						value="#{somMB.som.proveedor1}" style="width:100%">
+						<f:selectItems value="#{proveedorMB.proveedores}" var="prov"
+							itemLabel="#{prov.nombre}" itemValue="#{prov}" />
+					</h:selectOneMenu>
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtMant" value="Empresa Mantenimiento" />
+				<p:inplace id="txtMant" editor="true" style="color:#757575"
+					emptyLabel="Seleccionar proveedor"
+					label="#{somMB.som.proveedor2.nombre}">
+
+					<h:selectOneMenu converter="selectOneMenuConverter"
+						value="#{somMB.som.proveedor2}" style="width:100%">
+						<f:selectItems value="#{proveedorMB.proveedores}" var="mant"
+							itemLabel="#{mant.nombre}" itemValue="#{mant}" />
+					</h:selectOneMenu>
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+
+				<h:outputText for="txtPila" value="Cambio de pila" />
+				<p:inplace id="txtPila" editor="true" emptyLabel="Seleccionar fecha"
+					style="color:#757575">
+					<p:calendar value="#{somMB.som.cambioPila}" locale="es"
+						pattern="dd/MM/yyyy" readonlyInput="true" required="true" />
+					<p:ajax event="save" listener="#{somMB.modificarSom()}" />
+				</p:inplace>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<!-- 	####################__DIALOGO_PTPOS__####################	 -->
+	<p:dialog id="dgPtpos" widgetVar="wdialogoPtpos"
+		header="#{ptposMB.estacion.idEstacion} - #{ptposMB.estacion.razonSocial}"
+		modal="true" closeOnEscape="true"
+		styleClass="ui-dialog-title-Ptpos ui-dialog ui-dialog-titlebar"
+		dynamic="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2" id="datosPtpos">
+				<p:dataTable id="tablaPtpos" rowIndexVar="row"
+					style="width:700px; font-size:12px; text-align:center"
+					emptyMessage="Ningun PTPOS registrado"
+					value="#{ptposMB.ptposEstacion}" var="ptpos" rows="25"
+					scrollable="true" scrollWidth="100%" sortBy="#{ptpos.terminal}">
+
+					<p:column headerText="Terminal">
+						<h:outputText value="#{ptpos.terminal}" />
+					</p:column>
+
+					<p:column headerText="Ip Local">
+						<h:outputText value="#{ptpos.ipLocal}" />
+					</p:column>
+
+					<p:column headerText="Ip Terminal">
+						<h:outputText value="#{ptpos.ipTerminal}" />
+					</p:column>
+
+					<p:column headerText="Creacion Keystore">
+						<h:outputText value="#{ptpos.keystore}" />
+					</p:column>
+
+					<p:column headerText="Principal">
+						<h:outputText value="#{ptpos.principal}" />
+					</p:column>
+
+					<p:column headerText="Despachos Reales">
+						<h:outputText value="#{ptpos.despachosReales}" />
+					</p:column>
+
+					<p:column headerText="Telefonos">
+						<p:dataList value="#{ptposMB.telefono}" var="tel"
+							rendered="#{row==0}">
+        					#{tel.telefono}
+        				</p:dataList>
+					</p:column>
+
+					<p:column headerText="GAC"
+						rendered="#{gacMB.existeGac(ptposMB.estacion) != null}">
+						<p:commandButton icon="fa fa-fw fa-edit" value="Ver Datos"
+							actionListener="#{gacMB.leerGac(ptposMB.estacion)}"
+							oncomplete="PF('wdialogoGac').show(); PF('wdialogoPtpos').hide();"
+							update="dgGac" />
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+
+	<!-- 	####################__DIALOGO_GAC__####################	 -->
+	<p:dialog id="dgGac" widgetVar="wdialogoGac"
+		header="#{ptposMB.estacion.idEstacion} - #{ptposMB.estacion.razonSocial}"
+		modal="true" closeOnEscape="true"
+		styleClass="ui-dialog-title-Ptpos ui-dialog ui-dialog-titlebar"
+		dynamic="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="1" id="datosPtpos">
+				<p:dataTable id="tablaGac" rowIndexVar="row"
+					style="width:660px; font-size:12px; text-align:center"
+					emptyMessage="Ningun GAC registrado"
+					value="#{gacMB.existeGac(ptposMB.estacion)}" var="gac"
+					scrollable="true" scrollWidth="100%">
+
+					<p:column headerText="Usuario">
+						<h:outputText value="#{gac.usuario}" />
+					</p:column>
+
+					<p:column headerText="Password">
+						<h:outputText value="#{gac.password}" />
+					</p:column>
+
+				</p:dataTable>
+				<p:commandButton icon="fa fa-fw fa-edit" value="Volver"
+					oncomplete="PF('wdialogoPtpos').show(); PF('wdialogoGac').hide();"
+					update="dgGac" />
+
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<!-- 	####################__DIALOGO_SIN_SOM__####################	 -->
+	<p:dialog id="dgSinSOM" widgetVar="wdialogoSinSOM"
+		styleClass="ui-dialog-title-dialog ui-dialog"
+		header="#{somMB.estacion.idEstacion} - #{somMB.estacion.razonSocial}"
+		modal="true" closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2" id="datosEstacion">
+
+				<h:outputText for="txtContacto" value="Telefono" />
+				<p:dataList value="#{somMB.telefono}" var="tel">
+        				#{tel.telefono}
+        		</p:dataList>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<!-- 	####################__DIALOGO_AGREGAR_SOM__####################	 -->
+	<p:dialog id="dgAddSom" widgetVar="wdialogoAddSom" header="Datos SOM"
+		styleClass="ui-dialog-title-dialog ui-dialog" modal="true"
+		closeOnEscape="true" height="550">
+		<h:form id="frmSOM">
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2" id="datosSom">
+
+				<h:outputText for="txtEstacion" value="Estacion" />
+				<h:outputText id="txtEstacion"
+					value="#{somMB.idEstacion.idEstacion} #{somMB.idEstacion.razonSocial}"
+					required="true" />
+
+				<h:outputText for="txtTeam" value="TeamViewer" />
+				<h:inputText id="txtTeam" value="#{somMB.teamViewer}"
+					required="true" />
+
+				<h:outputText for="txtTerminal" value="Terminal" />
+				<h:inputText id="txtTerminal" value="#{somMB.terminal}" />
+
+				<h:outputText for="txtVersion" value="Version SOM" />
+				<h:inputText id="txtVersion" value="#{somMB.version}"
+					required="true" />
+
+				<h:outputText for="txtMpls" value="MPLS" />
+				<h:inputText id="txtMpls" value="#{somMB.mpls}" required="true" />
+
+				<h:outputText for="txtModelo" value="Modelo PC" />
+				<h:inputText id="txtModelo" value="#{somMB.modeloPC}"
+					required="true" />
+
+				<h:outputText for="txtUPS" value="UPS" />
+				<h:inputText id="txtUPS" value="#{somMB.ups}" required="true" />
+
+				<h:outputText for="txtByPass" value="Llave ByPass" />
+				<h:inputText id="txtByPass" value="#{somMB.llaveByPass}"
+					required="true" />
+
+				<h:outputText for="txtPicosVis" value="Picos VIS" />
+				<h:inputText id="txtPicosVis" value="#{somMB.picosVis}"
+					required="true" />
+
+				<h:outputText for="txtPicosSom" value="Picos SOM" />
+				<h:inputText id="txtPicosSom" value="#{somMB.picosSom}"
+					required="true" />
+
+				<h:outputText for="txtPicosfuera" value="Picos Fuera" />
+				<h:inputText id="txtPicosFuera" value="#{somMB.picosFuera}"
+					required="true" />
+
+
+				<h:outputText for="txtBilletera" value="Billetera pistero" />
+				<h:inputText id="txtBilletera" value="#{somMB.billeteraPistero}"
+					required="true" />
+
+				<h:outputText for="txtSeparacion" value="Separacion de pista" />
+				<h:inputText id="txtSeparacion" value="#{somMB.separacionPista}"
+					required="true" />
+
+				<h:outputText for="txtWGT" value="MWGT" />
+				<h:inputText id="txtWGT" value="#{somMB.mwgt}" required="true" />
+
+				<h:outputText for="txtMiTag" value="MiTags" />
+				<h:inputText id="txtMiTag" value="#{somMB.mitags}" required="true" />
+
+				<h:outputText for="txtORTR" value="ORTR" />
+				<h:inputText id="txtORTR" value="#{somMB.ortr}" required="true" />
+
+				<h:outputText for="txtFuente" value="Fuente Surtidor" />
+				<h:inputText id="txtFuente" value="#{somMB.fuenteSurtidor}"
+					required="true" />
+
+				<h:outputText for="txtUsuario" value="Usuario SOM" />
+				<h:inputText id="txtUsuario" value="#{somMB.usuarioSom}"
+					required="true" />
+
+				<h:outputText for="txtPass" value="Password SOM" />
+				<h:inputText id="txtPass" value="#{somMB.passwordSom}"
+					required="true" />
+
+				<h:outputText for="txtTerminalIP" value="IP Terminal" />
+				<h:inputText id="txtTerminalIP" value="#{somMB.terminalIP}"
+					required="true" />
+
+				<h:outputText for="txtRegulador" value="Regulador de voltaje" />
+				<h:inputText id="txtRegulador" value="#{somMB.reguladorVoltaje}"
+					required="true" />
+
+				<h:outputText for="txtControladora" value="Controladora" />
+				<h:selectOneMenu id="txtControladora"
+					converter="selectOneMenuConverter" value="#{somMB.idControladora}"
+					style="width:100%">
+					<f:selectItems value="#{controladoraMB.controladoras}" var="contr"
+						itemLabel="#{contr.nombre}" itemValue="#{contr}" />
+				</h:selectOneMenu>
+
+				<h:outputText for="txtProveedor" value="Proveedor" />
+				<h:selectOneMenu id="txtProveedor"
+					converter="selectOneMenuConverter" value="#{somMB.idProveedor}"
+					style="width:100%">
+					<f:selectItems value="#{proveedorMB.proveedores}" var="prov"
+						itemLabel="#{prov.nombre}" itemValue="#{prov}" />
+				</h:selectOneMenu>
+
+				<h:outputText for="txtMant" value="Empresa Mantenimiento" />
+				<h:selectOneMenu id="txtMant" converter="selectOneMenuConverter"
+					value="#{somMB.idMantenimiento}" style="width:100%">
+					<f:selectItems value="#{proveedorMB.proveedores}" var="mant"
+						itemLabel="#{mant.nombre}" itemValue="#{mant}" />
+				</h:selectOneMenu>
+
+				<h:outputText for="txtPila" value="Cambio de pila" />
+				<p:calendar id="txtPila" value="#{somMB.cambioPila}" locale="es"
+					pattern="dd/MM/yyyy" readonlyInput="true" required="true" />
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					update="datosSom" actionListener="#{somMB.createSom()}"
+					oncomplete="PF('wdialogo').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+
+	<!-- 	####################__DIALOGO_EDICION__####################	 -->
+	<p:dialog id="dialogo" widgetVar="wdialogo" header="Editar Estacion"
+		styleClass="ui-dialog-title-dialog ui-dialog" modal="true"
+		closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2">
+				<p:outputLabel for="txtID" value="ID" />
+				<p:inputText id="txtID" required="true"
+					value="#{estacionMB.estacion.idEstacion}" />
+
+				<p:outputLabel for="txtRazonSocial" value="Razon Social" />
+				<p:inputText id="txtRazonSocial" required="true"
+					value="#{estacionMB.estacion.razonSocial}" />
+
+				<p:outputLabel for="txtDireccion" value="Direccion" />
+				<p:inputText id="txtDireccion" required="true"
+					value="#{estacionMB.estacion.direccion}" />
+
+				<p:outputLabel for="txtLocalidad" value="Localidad" />
+				<h:selectOneMenu id="txtLocalidad"
+					value="#{estacionMB.estacion.localidad}" style="width:100%"
+					converter="selectOneMenuConverter">
+					<f:selectItems value="#{localidadMB.localidades}" var="loc"
+						itemLabel="#{loc.nombre}" itemValue="#{loc}" />
+				</h:selectOneMenu>
+
+				<p:outputLabel for="txtSG" value="Sistema Gestion" />
+				<h:selectOneMenu id="txtSG"
+					value="#{estacionMB.estacion.sistemaGestion}" style="width:100%"
+					converter="selectOneMenuConverter">
+					<f:selectItems value="#{sistemaGestionMB.sistemas}" var="sg"
+						itemLabel="#{sg.nombre}" itemValue="#{sg}" />
+				</h:selectOneMenu>
+
+				<p:outputLabel for="txtPromedio" value="Promedio Mensual" />
+				<p:inputText id="txtPromedio" required="true"
+					value="#{estacionMB.estacion.promedioMensual}" />
+
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					update=":frmPrincipal:tablaEstaciones"
+					actionListener="#{estacionMB.modificarEstacion()}"
+					oncomplete="PF('wdialogo').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

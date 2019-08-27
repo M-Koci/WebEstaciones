@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+	<title>Registrar Sistema Gestion</title>
+</h:head>
+<h:body>
+<style type="text/css">
+    .ui-datalist .ui-datalist-content {
+        border:0 none
+    }
+     
+    .ui-datalist ul {
+        padding: 0px 10px 0 20px;
+        margin: 5px 0;
+    }
+     
+    .value {
+        font-weight: bold;
+    }
+     
+    .ui-autocomplete-itemtip {
+        -moz-box-sizing: content-box;
+        -webkit-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h:form id="frmPrincipal">
+		<p:panel id="panel" header="Ingresar Estacion"
+			style="margin-botton:10px">
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="3" id="panelIngreso">
+
+				<p:outputLabel value="ID" />
+				<p:inputText id="id" value="#{estacionMB.idEstacion}"
+					required="true" label="ID" style="width:250px">
+				</p:inputText>
+				<p:message for="id" style="color:red" />
+				
+				<p:outputLabel value="Razon Social" />
+				<p:inputText id="razonSocial" value="#{estacionMB.razonSocial}"
+					required="true" label="Razon Social" style="width:250px">
+				</p:inputText>
+				<p:message for="razonSocial" style="color:red" />
+				
+				<p:outputLabel value="Direccion" />
+				<p:inputText id="direccion" value="#{estacionMB.direccion}"
+					required="true" label="Direccion" style="width:250px">
+				</p:inputText>
+				<p:message for="direccion" style="color:red" />
+				
+				<p:outputLabel value="Promedio mensual" />
+				<p:inputText id="promedio" value="#{estacionMB.promedioMensual}"
+					required="true" label="Promedio Mensual" style="width:250px">
+				</p:inputText>
+				<p:message for="promedio" style="color:red" />
+				
+				<p:outputLabel value="Sistema de Gestion" />
+				<p:selectOneMenu value="#{estacionMB.idSistemaGestion}" colMd="2"
+					converter="selectOneMenuConverter" style="width:222px"
+					required="true" label="Seleccione un sistema de gestion" effect="fade"
+					labelColMd="2">
+    			<f:selectItems value="#{sistemaGestionMB.sistemas}"
+						var="sg" itemLabel="#{sg.nombre}" itemValue="#{sg}" />
+    			</p:selectOneMenu>
+				<p:message for="direccion" style="color:red" />
+				
+				<p:outputLabel value="Localidad:" for="idLocalidad" />
+        		<p:autoComplete id="idLocalidad" value="#{estacionMB.localidad}" completeMethod="#{estacionMB.completeLoc}"
+	                var="loc" itemLabel="#{loc.nombre}" itemValue="#{loc}" converter="themeConverter" maxResults="8" minQueryLength="2"
+                    queryDelay="1000" forceSelection="true" />
+				<p:message for="idLocalidad" style="color:red" />
+				
+			</h:panelGrid>
+		</p:panel>
+		<p:commandButton value="Crear" icon="fa fa-fw fa-plus-square"
+			action="#{estacionMB.createEstacion()}"
+			update=":frmPrincipal:panelIngreso" />
+	</h:form>
+</h:body>
+</html>

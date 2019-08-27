@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}" type="image/x-icon" />
+	<title>Listado de Usuarios</title>
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Estaciones" icon="fa fa-fw fa-building"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="EESS" url="editarEstaciones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="SMCC" url="camiones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="BCP" url="bcp.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="Alta GAC" url="altaGac.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+			</p:submenu>
+			
+			<p:submenu label="Contactos" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar contacto" url="contactoIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Ver contactos" url="contactoEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="S G" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarSG.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarSG.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Proveedores" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarProveedor.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarProveedor.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Controladora" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarControladora.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarControladora.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Despachos" icon="fa fa-fw fa-car">
+				<p:menuitem value="Ver Despachos" url="despachoAdmin.dbs"
+					icon="fa fa-fw fa-list-ul" />
+			</p:submenu>
+			
+			<p:submenu label="Localidades" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Ver Localidades" url="localidad.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+			</p:submenu>
+			
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<!-- 	####################__LISTA USUARIOS__####################	 -->
+	<h:form id="frmPrincipal">
+		<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+			showDetail="true" />
+		<p:dataTable id="tablaUsuarios"
+			style="width:auto; font-size:12px; text-align:center"
+			emptyMessage="Ningun usuario registrado" value="#{usuarioMB.users}"
+			var="us" rows="10" paginator="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,20,40" scrollable="true" scrollWidth="100%"
+			sortBy="#{us.perfil}">
+
+			<p:column headerText="Nombre" filterBy="#{us.nombre}"
+				filterMatchMode="contains" sortBy="#{us.nombre}">
+				<h:outputText value="#{us.nombre}" />
+			</p:column>
+
+			<p:column headerText="ID" filterBy="#{us.idUsuario}"
+				filterMatchMode="contains" sortBy="#{us.idUsuario}">
+				<h:outputText value="#{us.idUsuario}" />
+			</p:column>
+
+			<p:column headerText="Perfil" filterBy="#{us.perfil}"
+				filterMatchMode="contains" sortBy="#{us.perfil}">
+				<h:outputText value="#{us.perfil}" />
+			</p:column>
+
+			<p:column headerText="Editar">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Editar"
+					actionListener="#{usuarioMB.leer(us)}"
+					oncomplete="PF('wdialogo').show();" update="dialogo" />
+			</p:column>
+
+			<p:column headerText="Cambiar contraseña">
+				<p:commandButton icon="fa fa-fw fa-key" value="Cambiar Pass"
+					actionListener="#{usuarioMB.leer(us)}"
+					oncomplete="PF('wdialogoPass').show();" update="dialogoPass" />
+			</p:column>
+
+			<p:column headerText="Desactivar">
+				<p:commandButton value="Desactivar" icon="fa fa-fw fa-lock"
+					actionListener="#{usuarioMB.leer(us)}"
+					oncomplete="PF('wdialogoDesactivar').show();"
+					update="dialogoDesactivar" rendered="#{us.perfil != 'DESACTIVADO'}"
+					style="margin:auto" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+	<br />
+	<h:form>
+		<p:commandButton value="Volver" icon="fa fa-fw fa-undo"
+			action="indexAdmin?faces-redirect=true" />
+	</h:form>
+
+	<!-- 	####################__DIALOGO_EDICION__####################	 -->
+	<p:dialog id="dialogo" widgetVar="wdialogo" header="Editar Usuario"
+		modal="true" closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2">
+				<p:outputLabel for="txtNombre" value="Nombre" />
+				<p:inputText id="txtNombre" required="true"
+					value="#{usuarioMB.user.nombre}" />
+
+				<p:outputLabel for="txtID" value="ID" />
+				<p:inputText id="txtID" required="true"
+					value="#{usuarioMB.user.idUsuario}" />
+
+				<p:outputLabel for="txtPerfil" value="Perfil" />
+				<h:selectOneMenu id="txtPerfil" value="#{usuarioMB.user.perfil}"
+					style="width:100%">
+					<f:selectItems value="#{usuarioMB.editPerfiles()}" var="perfil"
+						itemLabel="#{perfil}" itemValue="#{perfil}" />
+				</h:selectOneMenu>
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					update=":frmPrincipal:tablaUsuarios"
+					actionListener="#{usuarioMB.modificarUsuario()}"
+					oncomplete="PF('wdialogo').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<!-- 	####################__DIALOGO_PASSWORD__####################	 -->
+	<p:dialog id="dialogoPass" widgetVar="wdialogoPass"
+		header="Cambiar Contraseña" modal="true" closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2">
+
+				<p:outputLabel for="txtPassword" value="Password" />
+				<p:password id="txtPassword" required="true"
+					value="#{usuarioMB.user.password}" match="txtPassword2"
+					validatorMessage="Las contraseñas no coinciden" weakLabel="Debil"
+					goodLabel="Bueno" strongLabel="Fuerte" feedback="true"
+					promptLabel="Ingrese el password" />
+
+				<p:outputLabel for="txtPassword2" value="Confirmar" />
+				<p:password id="txtPassword2" required="true"
+					value="#{usuarioMB.user.password}" />
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					update=":frmPrincipal:tablaUsuarios"
+					actionListener="#{usuarioMB.modificarUsuario()}"
+					oncomplete="PF('wdialogoPass').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogoPass').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+
+	<!-- 	####################__DIALOGO_DESACTIVAR__####################	 -->
+	<p:dialog id="dialogoDesactivar" widgetVar="wdialogoDesactivar"
+		header="Desactivar Usuario" modal="true" closeOnEscape="true">
+		<p:commandButton value="Confirmar" icon="fa fa-fw fa-check-square"
+			actionListener="#{usuarioMB.desactivarUsuario()}"
+			update=":frmPrincipal:tablaUsuarios"
+			oncomplete="PF('wdialogoDesactivar').hide();" />
+		<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+			immediate="true" onclick="PF('wdialogoDesactivar').hide();" />
+	</p:dialog>
+</h:body>
+</html>

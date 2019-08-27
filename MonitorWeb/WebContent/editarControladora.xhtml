@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}" type="image/x-icon" />
+	<title>Controladora</title>
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Estaciones" icon="fa fa-fw fa-building"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="EESS" url="editarEstaciones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="SMCC" url="camiones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="BCP" url="bcp.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="Alta GAC" url="altaGac.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+			</p:submenu>
+			
+			<p:submenu label="Contactos" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar contacto" url="contactoIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Ver contactos" url="contactoEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="S G" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarSG.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarSG.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Proveedores" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarProveedor.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarProveedor.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Controladora" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarControladora.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarControladora.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Despachos" icon="fa fa-fw fa-car">
+				<p:menuitem value="Ver Despachos" url="despachoAdmin.dbs"
+					icon="fa fa-fw fa-list-ul" />
+			</p:submenu>
+			
+			<p:submenu label="Localidades" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Ver Localidades" url="localidad.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+			</p:submenu>
+			
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<!-- 	####################__LISTA CONTROLADORAS__####################	 -->
+	<h:form id="frmPrincipal">
+		<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+			showDetail="true" />
+		<p:dataTable id="tablaControladora"
+			style="width:auto; font-size:12px; text-align:center"
+			emptyMessage="Ninguna controladora registrada" value="#{controladoraMB.controladoras}"
+			var="cont" rows="10" paginator="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,20,40" scrollable="true" scrollWidth="100%"
+			sortBy="#{cont.nombre}">
+
+			<p:column headerText="Nombre" filterBy="#{cont.nombre}"
+				filterMatchMode="contains" sortBy="#{cont.nombre}">
+				<h:outputText value="#{cont.nombre}" />
+			</p:column>
+			
+			<p:column headerText="Version" filterBy="#{cont.version}"
+				filterMatchMode="contains" sortBy="#{cont.version}">
+				<h:outputText value="#{cont.version}" />
+			</p:column>
+			
+			<p:column headerText="Proveedor" filterBy="#{cont.proveedor.nombre}"
+				filterMatchMode="contains" sortBy="#{cont.proveedor.nombre}">
+				<h:outputText value="#{cont.proveedor.nombre}" />
+			</p:column>
+
+			
+
+			<p:column headerText="Editar">
+				<p:commandButton icon="fa fa-fw fa-edit" value="Editar"
+					actionListener="#{controladoraMB.leer(cont)}"
+					oncomplete="PF('wdialogo').show();" update="dialogo" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+	<br />
+
+	<!-- 	####################__DIALOGO_EDICION__####################	 -->
+	<p:dialog id="dialogo" widgetVar="wdialogo" header="Editar Controladora"
+		modal="true" closeOnEscape="true">
+		<h:form>
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="2">
+				<p:outputLabel for="txtNombre" value="Nombre" />
+				<p:inputText id="txtNombre" required="true"
+					value="#{controladoraMB.controladora.nombre}" />
+
+				<p:outputLabel for="txtVersion" value="Version" />
+				<p:inputText id="txtVersion" required="true"
+					value="#{controladoraMB.controladora.version}" />
+					
+				<p:outputLabel for="txtProv" value="Proveedor" />
+				<h:selectOneMenu id="txtProv" value="#{controladoraMB.controladora.proveedor}"
+					style="width:100%" converter="selectOneMenuConverter">
+					<f:selectItems value="#{proveedorMB.proveedores}" var="prov"
+						itemLabel="#{prov.nombre}" itemValue="#{prov}" />
+				</h:selectOneMenu>
+
+				<p:commandButton value="Actualizar" icon="fa fa-fw fa-check-square"
+					update=":frmPrincipal:tablaControladora"
+					actionListener="#{controladoraMB.modificarControladora()}"
+					oncomplete="PF('wdialogo').hide();" />
+				<p:commandButton value="Cancelar" icon="fa fa-fw fa-close"
+					immediate="true" onclick="PF('wdialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>

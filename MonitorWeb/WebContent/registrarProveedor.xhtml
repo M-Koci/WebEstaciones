@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<link rel="shortcut icon" href="#{resource['images/logo.ico']}"
+		type="image/x-icon" />
+	<f:event listener="#{plantillaController.verificarAdmin()}"
+		type="preRenderView" />
+	<title>Registrar Proveedor</title>
+</h:head>
+<h:body>
+	<!-- 	####################__MENU__####################	 -->
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Inicio" action="indexAdmin?faces-redirect=true"
+				icon="fa fa-fw fa-home" />
+			<p:submenu label="Estaciones" icon="fa fa-fw fa-building"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="EESS" url="editarEstaciones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="SMCC" url="camiones.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="BCP" url="bcp.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+				<p:menuitem value="Alta GAC" url="altaGac.dbs"
+					icon="fa fa-fw fa-chevron-right" />
+			</p:submenu>
+			
+			<p:submenu label="Contactos" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar contacto" url="contactoIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Ver contactos" url="contactoEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="Usuarios" icon="fa fa-fw fa-users"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar usuarios" url="usuarioIngreso.dbs"
+					icon="fa fa-fw fa-user-plus" />
+				<p:menuitem value="Editar usuarios" url="usuarioEditar.dbs"
+					icon="fa fa-fw fa-user-md" />
+			</p:submenu>
+			
+			<p:submenu label="S G" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarSG.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarSG.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Proveedores" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarProveedor.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarProveedor.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Controladora" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Registrar" url="registrarControladora.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+				<p:menuitem value="Editar" url="editarControladora.dbs"
+					icon="fa fa-fw fa-list-alt" />
+			</p:submenu>
+			
+			<p:submenu label="Despachos" icon="fa fa-fw fa-car">
+				<p:menuitem value="Ver Despachos" url="despachoAdmin.dbs"
+					icon="fa fa-fw fa-list-ul" />
+			</p:submenu>
+			
+			<p:submenu label="Localidades" icon="fa fa-fw fa-th-list"
+				rendered="#{plantillaController.us.perfil == 'ADMIN'}">
+				<p:menuitem value="Ver Localidades" url="localidad.dbs"
+					icon="fa fa-fw fa-plus-square-o" />
+			</p:submenu>
+			
+			<f:facet name="options">
+				<p:commandButton actionListener="#{loginController.cerrarSesion()}"
+					icon="ui-icon-power" title="Cerrar Sesión"
+					action="login?faces-redirect=true" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h:form id="frmPrincipal">
+		<p:panel id="panel" header="Ingresar Proveedor"
+			style="margin-botton:10px">
+			<p:growl id="mensaje" autoUpdate="true" showSummary="true"
+				showDetail="true" />
+			<h:panelGrid columns="3" id="panelIngreso">
+				
+				<p:outputLabel value="Nombre:" />
+				<p:inputText id="nombre" value="#{proveedorMB.nombre}" required="true"
+					label="Nombre" style="width:250px">
+				</p:inputText>
+				<p:message for="nombre" style="color:red" />
+				
+				<p:outputLabel value="Telefono:" />
+				<p:inputText id="telefono" value="#{proveedorMB.telefonoGuardia}" required="true"
+					label="Telefono" style="width:250px">
+				</p:inputText>
+				<p:message for="telefono" style="color:red" />
+			</h:panelGrid>
+		</p:panel>
+		<p:commandButton value="Crear" icon="fa fa-fw fa-plus-square"
+			action="#{proveedorMB.createProveedor()}"
+			update=":frmPrincipal:panelIngreso" />
+	</h:form>
+</h:body>
+</html>
